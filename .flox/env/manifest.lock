@@ -1,0 +1,183 @@
+{
+  "lockfile-version": 1,
+  "manifest": {
+    "version": 1,
+    "install": {
+      "gcc-unwrapped": {
+        "pkg-path": "gcc-unwrapped",
+        "systems": [
+          "x86_64-linux"
+        ]
+      },
+      "gum": {
+        "pkg-path": "gum"
+      },
+      "open-webui-frontend": {
+        "store-path": "/nix/store/kqlh5cqxxyq9k9rgl4h20m2awgwyrn90-open-webui-frontend-0.8.5",
+        "systems": [
+          "x86_64-linux"
+        ]
+      },
+      "python311": {
+        "pkg-path": "python311Full"
+      },
+      "uv": {
+        "pkg-path": "uv"
+      }
+    },
+    "hook": {
+      "on-activate": "  export BACKEND_HOST=\"${BACKEND_HOST:-127.0.0.1}\"\n  export BACKEND_PORT=\"${BACKEND_PORT:-8000}\"\n  export BACKEND_HEALTH=\"${BACKEND_HEALTH:-/health}\"\n\n  if [ -z \"${DEFAULT_MODEL_PARAMS:-}\" ]; then\n    export DEFAULT_MODEL_PARAMS='{\"stream_response\": false, \"max_tokens\": 3072}'\n  fi\n  export CORS_ALLOW_ORIGIN=\"${CORS_ALLOW_ORIGIN:-*}\"\n\n  _owui_bin=\"$(which open-webui-frontend)\"\n  _owui_root=\"$(dirname \"$(dirname \"$(readlink -f \"$_owui_bin\")\")\")\"\n  source \"$_owui_root/share/open-webui/setup.sh\"\n  unset _owui_bin _owui_root\n"
+    },
+    "profile": {
+      "common": "  echo \"Open WebUI frontend\"\n  echo \"  backend: http://${BACKEND_HOST}:${BACKEND_PORT}/v1\"\n  echo \"  webui:   http://localhost:${PORT}\"\n  echo \"\"\n  echo \"  flox activate -s  to start\"\n"
+    },
+    "options": {
+      "systems": [
+        "x86_64-linux"
+      ],
+      "cuda-detection": false
+    },
+    "services": {
+      "open-webui": {
+        "command": "until curl -sf \"http://${BACKEND_HOST}:${BACKEND_PORT}${BACKEND_HEALTH}\" >/dev/null 2>&1; do echo \"Waiting for backend on ${BACKEND_HOST}:${BACKEND_PORT}...\"; sleep 3; done; echo \"Backend ready — starting Open WebUI on port ${PORT}\"; exec open-webui-frontend",
+        "is-daemon": false
+      }
+    }
+  },
+  "packages": [
+    {
+      "install_id": "open-webui-frontend",
+      "store_path": "/nix/store/kqlh5cqxxyq9k9rgl4h20m2awgwyrn90-open-webui-frontend-0.8.5",
+      "system": "x86_64-linux",
+      "priority": 5
+    },
+    {
+      "attr_path": "gcc-unwrapped",
+      "broken": false,
+      "derivation": "/nix/store/3mv6qnrxadlfs9mr39i76l0rrjli5zc4-gcc-14.3.0.drv",
+      "description": "GNU Compiler Collection, version 14.3.0",
+      "install_id": "gcc-unwrapped",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=b599843bad24621dcaa5ab60dac98f9b0eb1cabe",
+      "name": "gcc-14.3.0",
+      "pname": "gcc-unwrapped",
+      "rev": "b599843bad24621dcaa5ab60dac98f9b0eb1cabe",
+      "rev_count": 858212,
+      "rev_date": "2025-09-08T16:06:28Z",
+      "scrape_date": "2025-09-10T03:33:44.005589Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "14.3.0",
+      "outputs_to_install": [
+        "man",
+        "out",
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "checksum": "/nix/store/qvjz0b2pai2qaismsiw9ych76lh5djp2-gcc-14.3.0-checksum",
+        "info": "/nix/store/pm6l79019wcv7i1pp9cc9dxj7qp9zliz-gcc-14.3.0-info",
+        "lib": "/nix/store/ysdkxvcvy2sy36sqigkyqanixm76z2xh-gcc-14.3.0-lib",
+        "libgcc": "/nix/store/yn88qvq7iwz2mx4xic2dk3p59ah64bap-gcc-14.3.0-libgcc",
+        "man": "/nix/store/hgjr8n9rlr72gp09vkmw5ncxa8z4sbaf-gcc-14.3.0-man",
+        "out": "/nix/store/qdknxw57cwy1jkrhq7fzmiis73j42jv6-gcc-14.3.0"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "gum",
+      "broken": false,
+      "derivation": "/nix/store/zgkfjwakvcf9miz8njqiw5ic9yf5fbgg-gum-0.17.0.drv",
+      "description": "Tasty Bubble Gum for your shell",
+      "install_id": "gum",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=b599843bad24621dcaa5ab60dac98f9b0eb1cabe",
+      "name": "gum-0.17.0",
+      "pname": "gum",
+      "rev": "b599843bad24621dcaa5ab60dac98f9b0eb1cabe",
+      "rev_count": 858212,
+      "rev_date": "2025-09-08T16:06:28Z",
+      "scrape_date": "2025-09-10T03:33:45.081362Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.17.0",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/90mlbaz7lpjrmr4fvgngbfav0awpxyvq-gum-0.17.0"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "python311Full",
+      "broken": false,
+      "derivation": "/nix/store/j70lgcp37063s1ys9pm6z5r7888gpwsj-python3-3.11.13.drv",
+      "description": "High-level dynamically-typed programming language",
+      "install_id": "python311",
+      "license": "Python-2.0",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=b599843bad24621dcaa5ab60dac98f9b0eb1cabe",
+      "name": "python3-3.11.13",
+      "pname": "python311Full",
+      "rev": "b599843bad24621dcaa5ab60dac98f9b0eb1cabe",
+      "rev_count": 858212,
+      "rev_date": "2025-09-08T16:06:28Z",
+      "scrape_date": "2025-09-10T03:34:47.035105Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "python3-3.11.13",
+      "outputs_to_install": [
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "debug": "/nix/store/rr2adfxzjbkzakzjbjjvc3xi2yvcqshr-python3-3.11.13-debug",
+        "out": "/nix/store/y3kf2zx3a1d5gii8zaf9k19mh4qjzql0-python3-3.11.13"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "uv",
+      "broken": false,
+      "derivation": "/nix/store/f6q6yz695fsxay19rd8lws833955mm5v-uv-0.8.6.drv",
+      "description": "Extremely fast Python package installer and resolver, written in Rust",
+      "install_id": "uv",
+      "license": "[ Apache-2.0, MIT ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=b599843bad24621dcaa5ab60dac98f9b0eb1cabe",
+      "name": "uv-0.8.6",
+      "pname": "uv",
+      "rev": "b599843bad24621dcaa5ab60dac98f9b0eb1cabe",
+      "rev_count": 858212,
+      "rev_date": "2025-09-08T16:06:28Z",
+      "scrape_date": "2025-09-10T03:36:57.324771Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.8.6",
+      "outputs_to_install": [
+        "out",
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/hxvcjq4a053l4gm8asl4ynjyhlz2azib-uv-0.8.6"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    }
+  ]
+}

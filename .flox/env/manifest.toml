@@ -1,0 +1,66 @@
+# Open WebUI frontend — backend-agnostic runtime
+#
+# Works with any OpenAI-compatible backend (SGLang, vLLM, Triton, llama.cpp, etc.)
+#
+# Usage:
+#   BACKEND_HOST=192.168.0.42 BACKEND_PORT=30000 flox activate -s
+#
+# All configuration via env vars (with sensible defaults):
+#   BACKEND_HOST   — inference server host      (default: 127.0.0.1)
+#   BACKEND_PORT   — inference server port      (default: 8000)
+#   BACKEND_HEALTH — health check endpoint      (default: /health)
+#   WEBUI_PORT     — Open WebUI listen port     (default: 8080)
+#   OPENAI_API_KEY — API key for backend        (default: none)
+#   DEFAULT_MODEL_PARAMS — JSON model params    (default: see hook)
+#   CORS_ALLOW_ORIGIN    — CORS origins         (default: *)
+#   WEBUI_AUTH     — enable auth                (default: false)
+version = 1
+
+[install]
+# open-webui-frontend.pkg-path = "flox/open-webui-frontend"
+# Testing local build:
+open-webui-frontend.store-path = "/nix/store/kqlh5cqxxyq9k9rgl4h20m2awgwyrn90-open-webui-frontend-0.8.5"
+open-webui-frontend.systems = ["x86_64-linux"]
+uv.pkg-path = "uv"
+gum.pkg-path = "gum"
+python311.pkg-path = "python311Full"
+gcc-unwrapped.pkg-path = "gcc-unwrapped"
+gcc-unwrapped.systems = ["x86_64-linux"]
+
+[hook]
+on-activate = '''
+  export BACKEND_HOST="${BACKEND_HOST:-127.0.0.1}"
+  export BACKEND_PORT="${BACKEND_PORT:-8000}"
+  export BACKEND_HEALTH="${BACKEND_HEALTH:-/health}"
+
+  if [ -z "${DEFAULT_MODEL_PARAMS:-}" ]; then
+    export DEFAULT_MODEL_PARAMS='{"stream_response": false, "max_tokens": 3072}'
+  fi
+  export CORS_ALLOW_ORIGIN="${CORS_ALLOW_ORIGIN:-*}"
+
+  _owui_bin="$(which open-webui-frontend)"
+  _owui_root="$(dirname "$(dirname "$(readlink -f "$_owui_bin")")")"
+  source "$_owui_root/share/open-webui/setup.sh"
+  unset _owui_bin _owui_root
+'''
+
+[services.open-webui]
+command = """until curl -sf "http://${BACKEND_HOST}:${BACKEND_PORT}${BACKEND_HEALTH}" >/dev/null 2>&1; do \
+  echo "Waiting for backend on ${BACKEND_HOST}:${BACKEND_PORT}..."; sleep 3; \
+done; \
+echo "Backend ready — starting Open WebUI on port ${PORT}"; \
+exec open-webui-frontend"""
+is-daemon = false
+
+[profile]
+common = '''
+  echo "Open WebUI frontend"
+  echo "  backend: http://${BACKEND_HOST}:${BACKEND_PORT}/v1"
+  echo "  webui:   http://localhost:${PORT}"
+  echo ""
+  echo "  flox activate -s  to start"
+'''
+
+[options]
+systems = ["x86_64-linux"]
+cuda-detection = false
