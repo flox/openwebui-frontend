@@ -41,6 +41,7 @@ All settings are env vars with sensible defaults. Set them before `flox activate
 | `DEFAULT_MODEL_PARAMS` | `{"stream_response": false, "max_tokens": 3072}` | Default model parameters (JSON) |
 | `CORS_ALLOW_ORIGIN` | `*` | Allowed CORS origins (`;`-separated for multiple) |
 | `WEBUI_AUTH` | `false` | Enable Open WebUI authentication |
+| `ENABLE_OLLAMA_API` | `false` | Enable Ollama native API (can run alongside OpenAI API) |
 
 ## Backend-specific examples
 
@@ -75,6 +76,20 @@ BACKEND_HOST=steve-ethos.penguin-logarithm.ts.net BACKEND_PORT=9000 BACKEND_HEAL
 ```
 
 Triton uses `/v1/models` as its health endpoint (not `/health`).
+
+### Ollama
+
+```bash
+# Ollama only (native API)
+BACKEND_PORT=11434 BACKEND_HEALTH=/ ENABLE_OLLAMA_API=true flox activate -s
+
+# Ollama + vLLM (both model sources in one UI)
+BACKEND_PORT=8000 OPENAI_API_KEY=sk-vllm-local-dev ENABLE_OLLAMA_API=true flox activate -s
+```
+
+With `ENABLE_OLLAMA_API=true`, Open WebUI connects to Ollama's native API
+(at `http://localhost:11434` by default) in addition to the OpenAI-compatible
+backend. Models from both sources appear in the same interface.
 
 ### llama.cpp
 
