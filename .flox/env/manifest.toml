@@ -19,7 +19,7 @@ version = 1
 [install]
 # open-webui-frontend.pkg-path = "flox/open-webui-frontend"
 # Testing local build:
-open-webui-frontend.store-path = "/nix/store/kqlh5cqxxyq9k9rgl4h20m2awgwyrn90-open-webui-frontend-0.8.5"
+open-webui-frontend.store-path = "/nix/store/jci5lhb0nn4nmbbqkl7ixbl7mmy4xxcj-open-webui-frontend-0.8.5"
 open-webui-frontend.systems = ["x86_64-linux"]
 uv.pkg-path = "uv"
 gum.pkg-path = "gum"
