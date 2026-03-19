@@ -19,8 +19,8 @@ version = 1
 [install]
 # open-webui-frontend.pkg-path = "flox/open-webui-frontend"
 # Testing local build:
-open-webui-frontend.store-path = "/nix/store/jci5lhb0nn4nmbbqkl7ixbl7mmy4xxcj-open-webui-frontend-0.8.5"
-open-webui-frontend.systems = ["x86_64-linux"]
+open-webui-frontend.pkg-path = "flox/open-webui-frontend"
+open-webui-frontend.systems = ["x86_64-linux", "x86_64-darwin", "aarch64-darwin"]
 uv.pkg-path = "uv"
 gum.pkg-path = "gum"
 python311.pkg-path = "python311Full"
@@ -62,5 +62,5 @@ common = '''
 '''
 
 [options]
-systems = ["x86_64-linux"]
-cuda-detection = false
+#systems = ["x86_64-linux"]
+#cuda-detection = false
