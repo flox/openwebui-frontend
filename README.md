@@ -72,7 +72,7 @@ SGLang serves on port 30000 by default and does not require an API key.
 ### Triton Inference Server
 
 ```bash
-BACKEND_HOST=steve-ethos.penguin-logarithm.ts.net BACKEND_PORT=9000 BACKEND_HEALTH=/v1/models flox activate -s
+BACKEND_HOST=triton-server.local BACKEND_PORT=9000 BACKEND_HEALTH=/v1/models flox activate -s
 ```
 
 Triton uses `/v1/models` as its health endpoint (not `/health`).
