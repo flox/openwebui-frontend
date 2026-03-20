@@ -16,11 +16,11 @@ Start a backend, then start the frontend pointing at it:
 
 ```bash
 # Terminal 1 — start a backend
-cd ~/dev/vllm-flox-runtime && flox activate -s    # serves on :8000
-# or: cd ~/dev/sglang-runtime && flox activate -s  # serves on :30000
+cd path/to/vllm-runtime && flox activate -s    # serves on :8000
+# or: cd path/to/sglang-runtime && flox activate -s  # serves on :30000
 
 # Terminal 2 — start the frontend
-cd ~/dev/openwebui-frontend
+cd path/to/openwebui-frontend
 
 # For vLLM (port 8000 is the default, just need the API key):
 OPENAI_API_KEY=sk-vllm-local-dev flox activate -s
