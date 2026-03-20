@@ -2,6 +2,13 @@
 
 Backend-agnostic [Open WebUI](https://github.com/open-webui/open-webui) v0.8.5 runtime.
 Works with any OpenAI-compatible inference server — vLLM, SGLang, Triton, llama.cpp, etc.
+Runs on Linux (x86_64) and macOS (Intel & Apple Silicon).
+
+## Prerequisites
+
+- [Flox](https://flox.dev) — a reproducible environment manager
+- A running OpenAI-compatible inference backend (vLLM, SGLang, Triton, llama.cpp, Ollama, etc.)
+- Supported platforms: `x86_64-linux`, `x86_64-darwin` (Intel Mac), `aarch64-darwin` (Apple Silicon Mac)
 
 ## Quick start
 
@@ -120,10 +127,8 @@ The first activation takes longer (~30s) because `uv` creates a Python
 venv and installs Open WebUI's dependencies. Subsequent activations
 skip this step (cached via requirements hash).
 
-## Related environments
+## Troubleshooting
 
-| Environment | Repo | Purpose |
-|---|---|---|
-| `vllm-flox-runtime` | `~/dev/vllm-flox-runtime` | vLLM inference server (Phi-4-mini-instruct) |
-| `sglang-runtime` | `~/dev/sglang-runtime` | SGLang inference server (Phi-4-mini-instruct-FP8) |
-| `openwebui-frontend` | `~/dev/openwebui-frontend` | This environment — the frontend |
+- **Health check never passes** — verify the backend is running and `BACKEND_HEALTH` points to the correct endpoint (e.g. `/v1/models` for Triton instead of the default `/health`)
+- **Port conflict** — set `WEBUI_PORT` to an available port (e.g. `WEBUI_PORT=8081`)
+- **First run is slow** — expected; the Python venv is being created with `uv` (~30s). Subsequent activations are cached
