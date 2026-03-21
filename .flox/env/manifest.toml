@@ -2,10 +2,15 @@
 #
 # Works with any OpenAI-compatible backend (SGLang, vLLM, Triton, llama.cpp, etc.)
 #
-# Usage:
+# Quick start (pick a preset):
+#   BACKEND=vllm flox activate -s
+#   BACKEND=sglang flox activate -s
+#
+# Or configure manually:
 #   BACKEND_HOST=192.168.0.42 BACKEND_PORT=30000 flox activate -s
 #
 # All configuration via env vars (with sensible defaults):
+#   BACKEND        — preset: vllm|sglang|triton|ollama|llamacpp
 #   BACKEND_HOST   — inference server host      (default: 127.0.0.1)
 #   BACKEND_PORT   — inference server port      (default: 8000)
 #   BACKEND_HEALTH — health check endpoint      (default: /health)
@@ -29,12 +34,45 @@ gcc-unwrapped.systems = ["x86_64-linux"]
 
 [hook]
 on-activate = '''
+  # ── BACKEND preset (case-insensitive) ────────────────────────
+  # Sets sensible defaults per backend; explicit env vars always win.
+  if [ -n "${BACKEND:-}" ]; then
+    shopt -s nocasematch
+    case "$BACKEND" in
+      vllm)
+        : "${OPENAI_API_KEY:=sk-vllm-local-dev}"
+        ;;
+      sglang)
+        : "${BACKEND_PORT:=30000}"
+        ;;
+      triton)
+        : "${BACKEND_PORT:=9000}"
+        : "${BACKEND_HEALTH:=/v1/models}"
+        ;;
+      ollama)
+        : "${BACKEND_PORT:=11434}"
+        : "${BACKEND_HEALTH:=/}"
+        : "${ENABLE_OLLAMA_API:=true}"
+        ;;
+      llamacpp)
+        : "${BACKEND_PORT:=8080}"
+        : "${WEBUI_PORT:=8081}"
+        ;;
+      *)
+        echo "WARNING: unknown BACKEND preset '$BACKEND'" >&2
+        echo "  Valid presets: vllm, sglang, triton, ollama, llamacpp" >&2
+        ;;
+    esac
+    shopt -u nocasematch
+  fi
+
+  # ── Defaults (preset values, if set above, are preserved) ────
   export BACKEND_HOST="${BACKEND_HOST:-127.0.0.1}"
   export BACKEND_PORT="${BACKEND_PORT:-8000}"
   export BACKEND_HEALTH="${BACKEND_HEALTH:-/health}"
 
   if [ -z "${DEFAULT_MODEL_PARAMS:-}" ]; then
-    export DEFAULT_MODEL_PARAMS='{"stream_response": false, "max_tokens": 3072}'
+    export DEFAULT_MODEL_PARAMS='{"stream_response": false, "max_tokens": 1024}'
   fi
   export CORS_ALLOW_ORIGIN="${CORS_ALLOW_ORIGIN:-*}"
 
@@ -55,10 +93,14 @@ is-daemon = false
 [profile]
 common = '''
   echo "Open WebUI frontend"
+  if [ -n "${BACKEND:-}" ]; then
+    echo "  preset:  ${BACKEND}"
+  fi
   echo "  backend: http://${BACKEND_HOST}:${BACKEND_PORT}/v1"
   echo "  webui:   http://localhost:${PORT}"
   echo ""
   echo "  flox activate -s  to start"
+  echo "  presets: vllm | sglang | triton | ollama | llamacpp"
 '''
 
 [options]
