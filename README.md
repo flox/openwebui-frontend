@@ -45,7 +45,7 @@ All settings are env vars with sensible defaults. Set them before `flox activate
 | `BACKEND_HEALTH` | `/health` | Health check endpoint path |
 | `OPENAI_API_KEY` | `none` | API key (required if backend enforces auth) |
 | `WEBUI_PORT` | `8080` | Open WebUI listen port |
-| `DEFAULT_MODEL_PARAMS` | `{"stream_response": false, "max_tokens": 3072}` | Default model parameters (JSON) |
+| `DEFAULT_MODEL_PARAMS` | `{"stream_response": false, "max_tokens": 1024}` | Default model parameters (JSON); raise for large-context models, keep low for small ones (e.g. Phi 3.5 @ 4096 ctx) |
 | `CORS_ALLOW_ORIGIN` | `*` | Allowed CORS origins (`;`-separated for multiple) |
 | `WEBUI_AUTH` | `false` | Enable Open WebUI authentication |
 | `ENABLE_OLLAMA_API` | `false` | Enable Ollama native API (can run alongside OpenAI API) |
